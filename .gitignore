@@ -1,0 +1,31 @@
+# Ignorar directorios y archivos generados por npm
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Ignorar archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos generados por IDEs o editores de texto
+.vscode/
+.idea/
+
+# Ignorar archivos de compilación y caché del cliente React Native
+client/node_modules/
+client/.expo/
+client/build/
+client/ios/build/
+client/android/build/
+client/ios/Pods/
+client/ios/DerivedData/
+client/ios/.generated/
+
+# Ignorar archivos de compilación y dependencias del servidor Node.js
+server/node_modules/
+server/build/
+server/.env
+server/.env.local
+
+# Ignorar archivos de logs
+*.log
