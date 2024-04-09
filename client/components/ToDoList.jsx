@@ -83,7 +83,7 @@ const ToDoList = ({ user, onLogout }) => {
                 )}
                 keyExtractor={(item) => item.id.toString()}
             />
-            <NewTaskInput onAddTask={addTask} />
+            <NewTaskInput userId={user.id} onAddTask={addTask} />
             <Modal
                 visible={showDeleteModal}
                 transparent={true}

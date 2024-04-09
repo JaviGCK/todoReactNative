@@ -4,12 +4,13 @@ import { AntDesign } from '@expo/vector-icons';
 import { loginUser } from '../utils/api';
 
 const Login = ({ onLogin }) => {
-    const [email, setEmail] = useState('');
+    const [selectedEmail, setSelectedEmail] = useState('');
+    const emails = ['usuario1@example.com', 'usuario2@example.com'];
 
     const handleLogin = async () => {
         try {
-            if (!email) {
-                console.error('Please enter your email');
+            if (!selectedEmail) {
+                console.error('Please select your email');
                 return;
             }
 
@@ -18,12 +19,31 @@ const Login = ({ onLogin }) => {
                 throw new Error('Error fetching users');
             }
             const users = await response.json();
-            const user = users.find(user => user.email === email);
+            const user = users.find(user => user.email === selectedEmail);
 
             if (!user) {
-                const newUser = { email, name: 'User', password: 'password' };
-                onLogin(newUser);
-                console.log('New user created:', newUser);
+                // Si el usuario no existe, intenta crear uno nuevo
+                try {
+                    const response = await fetch('http://localhost:8080/users', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ email: selectedEmail }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error creating new user');
+                    }
+
+                    const newUser = await response.json(); // Obtener el nuevo usuario creado desde la respuesta
+
+                    onLogin(newUser); // Llamar a la función onLogin con el nuevo usuario creado
+                    console.log('New user created:', newUser);
+                } catch (error) {
+                    console.error('Error creating new user:', error);
+                }
+
                 return;
             }
 
@@ -37,14 +57,21 @@ const Login = ({ onLogin }) => {
     return (
         <View style={styles.container}>
             <AntDesign name="user" size={50} color="#1124b4" style={styles.icon} />
-            <TextInput
-                style={styles.input}
-                placeholder="Email"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                textContentType="username"
-            />
+            <View style={styles.dropdownContainer}>
+                <Text style={styles.dropdownLabel}>Select an email:</Text>
+                <View style={styles.dropdown}>
+                    {emails.map(email => (
+                        <TouchableOpacity
+                            key={email}
+                            style={[styles.dropdownItem, selectedEmail === email && styles.selectedItem]}
+                            onPress={() => setSelectedEmail(email)}
+                        >
+                            <Text style={styles.dropdownItemText}>{email}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+            </View>
+
             <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
@@ -61,15 +88,32 @@ const styles = StyleSheet.create({
     icon: {
         marginBottom: 40,
     },
-    input: {
-        width: '100%',
-        height: 40,
+    dropdownContainer: {
+        marginBottom: 40,
+    },
+    dropdownLabel: {
+        marginBottom: 8,
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#1124b4',
+    },
+    dropdown: {
+        borderWidth: 1,
         borderColor: '#1124b4',
         borderRadius: 15,
-        borderWidth: 1,
-        marginBottom: 40,
-        paddingHorizontal: 10,
-        color: '#1124b4'
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+    },
+    dropdownItem: {
+        paddingVertical: 8,
+    },
+    dropdownItemText: {
+        fontSize: 16,
+        color: '#1124b4',
+    },
+    selectedItem: {
+        backgroundColor: '#1124b4',
+        borderRadius: 15,
     },
     loginButton: {
         backgroundColor: '#1124b4',

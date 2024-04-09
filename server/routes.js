@@ -61,12 +61,12 @@ router.post("/login", async (req, res) => {
     try {
         const user = await authenticateUser(email, password);
         if (!user) {
-            return res.status(401).json({ error: 'Credenciales inválidas' });
+            return res.status(401).json({ error: 'Invalid credentials' });
         }
-        res.status(200).json({ message: 'Usuario autenticado correctamente', user });
+        res.status(200).json({ message: 'User authenticated successfully', user });
     } catch (error) {
-        console.error('Error al autenticar usuario:', error);
-        res.status(500).json({ error: 'Error interno del servidor' });
+        console.error('Error authenticating user:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
     }
 });
 

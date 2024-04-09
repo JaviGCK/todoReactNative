@@ -3,13 +3,13 @@ import { TextInput, View, Pressable, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { addNewTask } from '../utils/api';
 
-const NewTaskInput = ({ onAddTask }) => {
+const NewTaskInput = ({ userId, onAddTask }) => {
     const [task, setTask] = useState('');
 
     const handleAddTask = async () => {
         if (task.trim() !== '') {
             try {
-                const newTask = await addNewTask(1, task);
+                const newTask = await addNewTask(userId, task);
                 onAddTask(newTask);
                 setTask('');
             } catch (error) {

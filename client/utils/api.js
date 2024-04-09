@@ -46,15 +46,18 @@ export const addNewTask = async (userId, taskTitle) => {
             }),
         });
 
-        if (response.ok) {
-            return await response.json();
-        } else {
+        if (!response.ok) {
             throw new Error(`Error adding task: ${response.statusText}`);
         }
+
+        const responseData = await response.json();
+
+        return responseData;
     } catch (error) {
         throw new Error(`Error adding task: ${error.message}`);
     }
 };
+
 
 export const deleteTodo = async (taskId) => {
     try {
