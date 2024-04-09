@@ -47,15 +47,16 @@ export function SharedTodoModalContent({
             <View style={{ flexDirection: "row" }}>
                 <View style={styles.participant}>
                     <Text style={[styles.description, { color: "white" }]}>
-                        {author.name}
+                        {author?.name || 'Author Name Not Available'}
                     </Text>
                 </View>
                 <View style={styles.participant}>
                     <Text style={[styles.description, { color: "white" }]}>
-                        {sharedWith.name}
+                        {sharedWith?.name || 'Shared With Name Not Available'}
                     </Text>
                 </View>
             </View>
+
         </View>
     );
 }

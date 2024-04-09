@@ -3,7 +3,7 @@ const BASE_URL = 'http://localhost:8080';
 // fetchData.js
 export async function fetchData() {
     try {
-        const response = await fetch(`http://localhost:8080/todos/2`);
+        const response = await fetch(`http://localhost:8080/todos/1`);
         const data = await response.json();
         return data;
     } catch (error) {
