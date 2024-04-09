@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { AntDesign } from '@expo/vector-icons';
 import { loginUser } from '../utils/api';
 
 const Login = ({ onLogin }) => {
@@ -7,13 +8,11 @@ const Login = ({ onLogin }) => {
 
     const handleLogin = async () => {
         try {
-            // Verificar si el campo de correo electrónico está vacío
             if (!email) {
-                console.error('Por favor ingrese su correo electrónico');
+                console.error('Please enter your email');
                 return;
             }
 
-            // Intentar iniciar sesión sin contraseña
             const response = await fetch('http://localhost:8080/users');
             if (!response.ok) {
                 throw new Error('Error fetching users');
@@ -21,33 +20,34 @@ const Login = ({ onLogin }) => {
             const users = await response.json();
             const user = users.find(user => user.email === email);
 
-            // Si el usuario no existe, crear uno con nombre y contraseña por defecto
             if (!user) {
-                const newUser = { email, name: 'Usuario', password: 'password' };
+                const newUser = { email, name: 'User', password: 'password' };
                 onLogin(newUser);
-                console.log('Nuevo usuario creado:', newUser);
+                console.log('New user created:', newUser);
                 return;
             }
 
-            // Si el usuario existe, iniciar sesión con su información
             onLogin(user);
-            console.log('Usuario autenticado:', user);
+            console.log('User authenticated:', user);
         } catch (error) {
-            console.error('Error en inicio de sesión:', error);
+            console.error('Error logging in:', error);
         }
     };
 
     return (
         <View style={styles.container}>
-            <Text style={styles.label}>Email:</Text>
+            <AntDesign name="user" size={50} color="#1124b4" style={styles.icon} />
             <TextInput
                 style={styles.input}
+                placeholder="Email"
                 value={email}
                 onChangeText={setEmail}
                 autoCapitalize="none"
                 textContentType="username"
             />
-            <Button title="Login" onPress={handleLogin} />
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Login</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -58,17 +58,30 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    label: {
-        fontSize: 16,
-        marginBottom: 5,
+    icon: {
+        marginBottom: 40,
     },
     input: {
-        width: '80%',
+        width: '100%',
         height: 40,
-        borderColor: 'gray',
+        borderColor: '#1124b4',
+        borderRadius: 15,
         borderWidth: 1,
-        marginBottom: 20,
+        marginBottom: 40,
         paddingHorizontal: 10,
+        color: '#1124b4'
+    },
+    loginButton: {
+        backgroundColor: '#1124b4',
+        borderRadius: 20,
+        paddingVertical: 10,
+        paddingHorizontal: 30,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
 });
 

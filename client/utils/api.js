@@ -11,21 +11,20 @@ export const loginUser = async (email, password) => {
             const data = await response.json();
             return data;
         } else {
-            console.error('Error en inicio de sesión');
+            console.error('Error in login.');
             return null;
         }
     } catch (error) {
-        console.error('Error de red:', error);
+        console.error('Network error:', error);
         return null;
     }
 };
-
 
 export const getUserTodos = async (userId) => {
     try {
         const response = await fetch(`http://localhost:8080/todos/${userId}`);
         if (!response.ok) {
-            throw new Error('Error fetching todos');
+            throw new Error('Error fetching todos.');
         }
         return await response.json();
     } catch (error) {
@@ -57,14 +56,13 @@ export const addNewTask = async (userId, taskTitle) => {
     }
 };
 
-
 export const deleteTodo = async (taskId) => {
     try {
         const response = await fetch(`http://localhost:8080/todos/${taskId}`, {
             method: 'DELETE',
         });
         if (!response.ok) {
-            throw new Error('Failed to delete todo');
+            throw new Error('Failed to delete todo.');
         }
     } catch (error) {
         console.error('Error deleting todo:', error);
@@ -72,3 +70,23 @@ export const deleteTodo = async (taskId) => {
     }
 };
 
+export const toggleTodoCompletion = async (todoId, completed) => {
+    try {
+        const response = await fetch(`http://localhost:8080/todos/${todoId}`, {
+            headers: {
+                "x-api-key": "abcdef123456",
+                "Content-Type": "application/json",
+            },
+            method: "PUT",
+            body: JSON.stringify({
+                value: completed,
+            }),
+        });
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (error) {
+        console.error('Error toggling todo completion:', error);
+        throw error;
+    }
+};

@@ -40,8 +40,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingHorizontal: 10,
         paddingVertical: 5,
-        backgroundColor: '#f0f0f0',
-        marginBottom: 10,
+        marginBottom: 30,
     },
     input: {
         flex: 1,

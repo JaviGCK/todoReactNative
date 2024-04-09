@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, Button, Alert, Pressable, Modal, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, FlatList, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { FontAwesome } from '@expo/vector-icons';
 import { getUserTodos, deleteTodo } from '../utils/api';
 import NewTaskInput from './NewTaskInput';
+import CheckMark from './CheckMark';
 
 const ToDoList = ({ user, onLogout }) => {
-    const [todos, setTodos] = useState([]);
-    const [longPressedTask, setLongPressedTask] = useState(null);
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [todos, setTodos] = React.useState([]);
+    const [longPressedTask, setLongPressedTask] = React.useState(null);
+    const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
-    useEffect(() => {
+    React.useEffect(() => {
         const fetchUserTodos = async () => {
             const data = await getUserTodos(user.id);
             setTodos(data);
@@ -26,7 +28,6 @@ const ToDoList = ({ user, onLogout }) => {
             await deleteTodo(taskId);
             setTodos(todos.filter(task => task.id !== taskId));
         } catch (error) {
-            Alert.alert('Error', 'Failed to delete task');
             console.error('Error deleting task:', error);
         }
     };
@@ -45,22 +46,40 @@ const ToDoList = ({ user, onLogout }) => {
         setShowDeleteModal(false);
     };
 
+    const toggleTodoCompletion = async (taskId) => {
+        const updatedTodos = todos.map(task => {
+            if (task.id === taskId) {
+                return { ...task, completed: !task.completed };
+            }
+            return task;
+        });
+        setTodos(updatedTodos);
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Lista de Tareas</Text>
-                <Button title="Logout" onPress={onLogout} />
+                <Text style={styles.title}>Task List</Text>
+                <TouchableOpacity onPress={onLogout}>
+                    <FontAwesome name="sign-out" size={24} color="black" />
+                </TouchableOpacity>
             </View>
             <FlatList
                 data={todos}
                 renderItem={({ item }) => (
-                    <Pressable
+                    <TouchableOpacity
                         onLongPress={() => handleLongPressTask(item.id)}
+                        style={styles.todoItem}
                     >
                         <View style={styles.todoItem}>
-                            <Text>{item.title}</Text>
+                            <CheckMark
+                                id={item.id}
+                                completed={item.completed}
+                                toggleTodo={toggleTodoCompletion}
+                            />
+                            <Text style={styles.taskText}>{item.title}</Text>
                         </View>
-                    </Pressable>
+                    </TouchableOpacity>
                 )}
                 keyExtractor={(item) => item.id.toString()}
             />
@@ -100,7 +119,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        margin: 100,
+        marginTop: 50,
+        padding: 50
     },
     title: {
         fontSize: 24,
@@ -108,11 +128,15 @@ const styles = StyleSheet.create({
     },
     todoItem: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+    },
+    taskText: {
+        fontSize: 18,
+        marginLeft: 20,
     },
     modalContainer: {
         flex: 1,
