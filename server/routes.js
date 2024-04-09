@@ -1,4 +1,6 @@
 import express from "express";
+import { getUserByEmail } from './controllers.js';
+
 import {
     getTodosByID,
     getSharedTodoByID,
@@ -68,13 +70,24 @@ router.post("/todos/shared_todos", async (req, res) => {
     try {
         const { todo_id, user_id, email } = req.body;
         const userToShare = await getUserByEmail(email);
+
+        if (!userToShare) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
         const sharedTodo = await shareTodo(todo_id, user_id, userToShare.id);
+
+        if (!sharedTodo) {
+            return res.status(500).json({ error: 'Failed to share todo' });
+        }
+
         res.status(201).send(sharedTodo);
     } catch (error) {
         console.error('Error sharing todo:', error);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
 
 router.post("/todos", async (req, res) => {
     try {
