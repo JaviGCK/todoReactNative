@@ -1,5 +1,5 @@
 import express from "express";
-import { getUserByEmail } from './controllers.js';
+import { authenticateUser, getUserByEmail } from './controllers.js';
 
 import {
     getTodosByID,
@@ -9,9 +9,20 @@ import {
     deleteTodo,
     shareTodo,
     createTodo,
+    getUsers,
 } from "./controllers.js";
 
 const router = express.Router();
+
+router.get("/users", async (req, res) => {
+    try {
+        const users = await getUsers();
+        res.status(200).send(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
 
 router.get("/todos/:id", async (req, res) => {
     try {
@@ -44,6 +55,32 @@ router.get("/users/:id", async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+
+router.post("/login", async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await authenticateUser(email, password);
+        if (!user) {
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
+        res.status(200).json({ message: 'Usuario autenticado correctamente', user });
+    } catch (error) {
+        console.error('Error al autenticar usuario:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
+    }
+});
+
+router.get("/users", async (req, res) => {
+    try {
+        const users = await getUserByEmail();
+        res.status(200).send(users);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+
 
 router.put("/todos/:id", async (req, res) => {
     try {

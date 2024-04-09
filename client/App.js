@@ -1,28 +1,39 @@
-import React from "react";
-import { StyleSheet, View } from "react-native";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import TodoList from "./components/ToDoList";
+// App.js
 
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import Login from './components/Login';
+import ToDoList from './components/ToDoList';
 
-export function App() {
+export default function App() {
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+  const handleLogin = (userData) => {
+    console.log('Usuario autenticado:', userData);
+    setLoggedInUser(userData);
+  };
+
+  const handleLogout = () => {
+    console.log('Usuario deslogueado');
+    setLoggedInUser(null);
+  };
+
   return (
-    <GestureHandlerRootView style={styles.flex1}>
-      <BottomSheetModalProvider>
-        <View style={styles.container}>
-          <TodoList />
-        </View>
-      </BottomSheetModalProvider>
-    </GestureHandlerRootView>
+    <View style={styles.container}>
+      {loggedInUser ? (
+        <ToDoList user={loggedInUser} onLogout={handleLogout} />
+      ) : (
+        <Login onLogin={handleLogin} />
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  flex1: {
-    flex: 1,
-  },
   container: {
     flex: 1,
-    backgroundColor: "#E9E9EF",
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

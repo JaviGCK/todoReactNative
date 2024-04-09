@@ -48,6 +48,8 @@ export async function authenticateUser(email, password) {
     }
 }
 
+
+
 export async function getTodosByID(id) {
     try {
         const [rows] = await pool.query(
@@ -106,6 +108,16 @@ export async function getUserByEmail(email) {
     } catch (error) {
         console.error('Error executing query:', error);
         return null;
+    }
+}
+
+export async function getUsers() {
+    try {
+        const [rows] = await pool.query(`SELECT * FROM users`);
+        return rows;
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return [];
     }
 }
 
