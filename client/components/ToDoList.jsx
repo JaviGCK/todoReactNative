@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Modal, TouchableOpacity, Dimensions } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { getUserTodos, deleteTodo } from '../utils/api';
 import NewTaskInput from './NewTaskInput';
 import CheckMark from './CheckMark';
+
+const windowWidth = Dimensions.get('window').width;
 
 const ToDoList = ({ user, onLogout }) => {
     const [todos, setTodos] = React.useState([]);
@@ -59,9 +61,9 @@ const ToDoList = ({ user, onLogout }) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Task List</Text>
+                <Text style={styles.title}>To Do List</Text>
                 <TouchableOpacity onPress={onLogout}>
-                    <FontAwesome name="sign-out" size={24} color="black" />
+                    <FontAwesome name="sign-out" size={24} color='#bbc2f4' />
                 </TouchableOpacity>
             </View>
             <FlatList
@@ -71,7 +73,7 @@ const ToDoList = ({ user, onLogout }) => {
                         onLongPress={() => handleLongPressTask(item.id)}
                         style={styles.todoItem}
                     >
-                        <View style={styles.todoItem}>
+                        <View style={styles.todoItemContent}>
                             <CheckMark
                                 id={item.id}
                                 completed={item.completed}
@@ -113,30 +115,43 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+        width: '100%',
+        backgroundColor: '#f0f2f5',
     },
     header: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: 'center',
         width: '100%',
-        marginTop: 50,
-        padding: 50
-    },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-    },
-    todoItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        padding: 16,
+        marginTop: 75,
+        marginBottom: 25,
+        backgroundColor: 'white',
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
     },
+    title: {
+        fontSize: 32,
+        fontWeight: 'bold',
+        color: '#1124b4',
+    },
+    todoItem: {
+        width: '100%',
+    },
+    todoItemContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 12,
+        paddingHorizontal: 16,
+        margin: 7,
+        borderRadius: 15,
+        backgroundColor: 'white',
+        width: windowWidth * 0.90,
+    },
     taskText: {
-        fontSize: 18,
-        marginLeft: 20,
+        fontSize: 16,
+        marginLeft: 12,
+        color: '#1124b4',
     },
     modalContainer: {
         flex: 1,
@@ -153,6 +168,7 @@ const styles = StyleSheet.create({
     modalText: {
         fontSize: 18,
         marginBottom: 20,
+        color: '#383839',
     },
     modalButtons: {
         flexDirection: 'row',

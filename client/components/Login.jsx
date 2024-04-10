@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
 import { loginUser } from '../utils/api';
 
@@ -22,7 +22,6 @@ const Login = ({ onLogin }) => {
             const user = users.find(user => user.email === selectedEmail);
 
             if (!user) {
-                // Si el usuario no existe, intenta crear uno nuevo
                 try {
                     const response = await fetch('http://localhost:8080/users', {
                         method: 'POST',
@@ -36,9 +35,9 @@ const Login = ({ onLogin }) => {
                         throw new Error('Error creating new user');
                     }
 
-                    const newUser = await response.json(); // Obtener el nuevo usuario creado desde la respuesta
+                    const newUser = await response.json();
 
-                    onLogin(newUser); // Llamar a la función onLogin con el nuevo usuario creado
+                    onLogin(newUser);
                     console.log('New user created:', newUser);
                 } catch (error) {
                     console.error('Error creating new user:', error);
@@ -72,7 +71,11 @@ const Login = ({ onLogin }) => {
                 </View>
             </View>
 
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <TouchableOpacity
+                style={[styles.loginButton, !selectedEmail && styles.disabledButton]}
+                onPress={handleLogin}
+                disabled={!selectedEmail} // Deshabilitar el botón si no hay correo electrónico seleccionado
+            >
                 <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
         </View>
@@ -110,9 +113,10 @@ const styles = StyleSheet.create({
     dropdownItemText: {
         fontSize: 16,
         color: '#1124b4',
+        padding: 10
     },
     selectedItem: {
-        backgroundColor: '#1124b4',
+        backgroundColor: '#bbc2f4',
         borderRadius: 15,
     },
     loginButton: {
@@ -120,6 +124,9 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         paddingVertical: 10,
         paddingHorizontal: 30,
+    },
+    disabledButton: {
+        backgroundColor: '#adb8c6',
     },
     buttonText: {
         color: 'white',

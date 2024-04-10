@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { TextInput, View, Pressable, StyleSheet } from 'react-native';
-import { AntDesign } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { addNewTask } from '../utils/api';
 
 const NewTaskInput = ({ userId, onAddTask }) => {
     const [task, setTask] = useState('');
+    const [isTaskEmpty, setIsTaskEmpty] = useState(true);
 
     const handleAddTask = async () => {
         if (task.trim() !== '') {
@@ -18,16 +19,21 @@ const NewTaskInput = ({ userId, onAddTask }) => {
         }
     };
 
+    const handleChangeText = (text) => {
+        setTask(text);
+        setIsTaskEmpty(text.trim() === '');
+    };
+
     return (
         <View style={styles.container}>
             <TextInput
                 style={styles.input}
                 placeholder="Nueva tarea..."
                 value={task}
-                onChangeText={setTask}
+                onChangeText={handleChangeText}
             />
-            <Pressable onPress={handleAddTask}>
-                <AntDesign name="pluscircleo" size={24} color="black" />
+            <Pressable onPress={handleAddTask} disabled={isTaskEmpty}>
+                <MaterialIcons name="send" size={24} color={isTaskEmpty ? '#adb8c6' : '#1124b4'} />
             </Pressable>
         </View>
     );
@@ -49,9 +55,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderRadius: 20,
         borderWidth: 1,
-        borderColor: 'gray',
+        borderColor: '#7089ee',
         backgroundColor: '#fff',
-        fontSize: 16,
+        color: '#1124b4',
+        fontSize: 24,
     },
 });
 
